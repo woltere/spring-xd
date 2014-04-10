@@ -17,6 +17,7 @@
 package org.springframework.xd.dirt.plugins;
 
 import org.springframework.integration.x.bus.MessageBus;
+import org.springframework.xd.module.DeploymentMetadata;
 import org.springframework.xd.module.ModuleType;
 import org.springframework.xd.module.core.Module;
 
@@ -24,7 +25,7 @@ import org.springframework.xd.module.core.Module;
 /**
  * Abstract class that extends {@link AbstractMessageBusBinderPlugin} and has common implementation methods related to
  * stream plugins.
- * 
+ *
  * @author Ilayaperumal Gopinathan
  */
 public abstract class AbstractStreamPlugin extends AbstractMessageBusBinderPlugin {
@@ -35,22 +36,26 @@ public abstract class AbstractStreamPlugin extends AbstractMessageBusBinderPlugi
 
 	@Override
 	protected String getInputChannelName(Module module) {
-		return module.getDeploymentMetadata().getInputChannelName();
+		DeploymentMetadata metadata = module.getDeploymentMetadata();
+		return isAliasedInput(module) ? metadata.getSourceChannelName() : metadata.getGroup() + "."
+		+ (metadata.getIndex() - 1);
 	}
 
 	@Override
 	protected boolean isAliasedInput(Module module) {
-		return module.getDeploymentMetadata().isAliasedInput();
+		return module.getDeploymentMetadata().getSourceChannelName() != null;
 	}
 
 	@Override
 	protected String getOutputChannelName(Module module) {
-		return module.getDeploymentMetadata().getOutputChannelName();
+		DeploymentMetadata metadata = module.getDeploymentMetadata();
+		return isAliasedOutput(module) ? metadata.getSinkChannelName() : metadata.getGroup() + "."
+		+ metadata.getIndex();
 	}
 
 	@Override
 	protected boolean isAliasedOutput(Module module) {
-		return module.getDeploymentMetadata().isAliasedOutput();
+		return module.getDeploymentMetadata().getSinkChannelName() != null;
 	}
 
 	@Override

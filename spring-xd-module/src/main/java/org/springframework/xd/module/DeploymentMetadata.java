@@ -8,7 +8,7 @@ import org.springframework.util.Assert;
 
 /**
  * Represents information about a particular module deployment. Extensible using {@link #addAttribute(String, Object)}.
- * 
+ *
  * @author Luke Taylor
  * @author Gary Russell
  */
@@ -44,26 +44,12 @@ public class DeploymentMetadata {
 		return index;
 	}
 
-	/**
-	 * Return whether the source end is using an aliased name.
-	 */
-	public boolean isAliasedInput() {
-		return sourceChannelName != null;
+	public String getSourceChannelName() {
+		return sourceChannelName;
 	}
 
-	public String getInputChannelName() {
-		return isAliasedInput() ? sourceChannelName : group + "." + (index - 1);
-	}
-
-	/**
-	 * Return whether the output end is using an aliased name.
-	 */
-	public boolean isAliasedOutput() {
-		return sinkChannelName != null;
-	}
-
-	public String getOutputChannelName() {
-		return isAliasedOutput() ? sinkChannelName : group + "." + index;
+	public String getSinkChannelName() {
+		return sinkChannelName;
 	}
 
 	public synchronized void addAttribute(String key, Object value) {
